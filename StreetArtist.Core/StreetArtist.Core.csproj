@@ -10,4 +10,8 @@
         <!-- InternalsVisibleTo Allows Test Project -->
         <InternalsVisibleTo Include="$(ProjectName).*" />
     </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Docs\" />
+    </ItemGroup>
 </Project>
