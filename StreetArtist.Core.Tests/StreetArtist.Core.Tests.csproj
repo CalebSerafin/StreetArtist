@@ -22,4 +22,8 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\StreetArtist.Core\StreetArtist.Core.csproj" />
+  </ItemGroup>
+
 </Project>
