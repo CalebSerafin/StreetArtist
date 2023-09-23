@@ -8,11 +8,10 @@
 
     <ItemGroup>
         <!-- InternalsVisibleTo Allows Test Project -->
-        <InternalsVisibleTo Include="$(ProjectName).*" />
+        <InternalsVisibleTo Include="$(ProjectName).Tests" />
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="A3SA\Parsing\" />
       <Folder Include="Docs\" />
       <Folder Include="Infrastructure\" />
     </ItemGroup>
@@ -32,6 +31,7 @@
       <PackageReference Include="Microsoft.Extensions.Logging" Version="7.0.0" />
       <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="7.0.0" />
       <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="7.0.0" />
+      <PackageReference Include="OneOf" Version="3.0.263" />
       <PackageReference Include="System.Interactive.Async.Providers" Version="6.0.1" />
     </ItemGroup>
 </Project>

@@ -1,8 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
-
-using Xunit.Abstractions;
-
-namespace StreetArtist.Core.Tests;
+﻿namespace StreetArtist.Core.Tests;
 
 class TestOutputLogger : ILoggerProvider, ILogger {
     public TestOutputLogger(ITestOutputHelper testOutput) {

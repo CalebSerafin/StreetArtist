@@ -1,8 +1,3 @@
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-
-using Xunit.Abstractions;
-
 namespace StreetArtist.Core.Tests;
 
 public class HighLevelSmokeTests {
@@ -10,9 +5,7 @@ public class HighLevelSmokeTests {
         this.testOutput = testOutput;
     }
 
-    #region Fields
     readonly ITestOutputHelper testOutput;
-    #endregion
 
     [Fact]
     public async Task ProjectStartsUp() {
