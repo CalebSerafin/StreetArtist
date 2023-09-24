@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace StreetArtist.Core.A3SA.Storage.Models;
-internal class NavGridRoot
-{
+﻿namespace StreetArtist.Core.A3SA.Storage.Models;
+internal class NavGridRoot {
+    public required MetaInformation? MetaInformation { get; set; }
+    public required List<RoadNode> RoadNodes { get; set; }
 }

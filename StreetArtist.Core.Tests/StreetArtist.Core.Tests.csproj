@@ -10,6 +10,52 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="TestData\Antistasi_Stratis.Stratis\cba_settings.sqf" />
+    <None Remove="TestData\Antistasi_Stratis.Stratis\description.ext" />
+    <None Remove="TestData\Antistasi_Stratis.Stratis\initPlayerLocal.sqf" />
+    <None Remove="TestData\Antistasi_Stratis.Stratis\initServer.sqf" />
+    <None Remove="TestData\Antistasi_Stratis.Stratis\mapInfo.hpp" />
+    <None Remove="TestData\Antistasi_Stratis.Stratis\mission.sqm" />
+    <None Remove="TestData\Antistasi_Stratis.Stratis\navGrid.sqf" />
+    <None Remove="TestData\Antistasi_Stratis.Stratis\onPlayerRespawn.sqf" />
+    <None Remove="TestData\Antistasi_Stratis.Stratis\Pictures\Mission\PIC.jpg" />
+    <None Remove="TestData\Antistasi_Stratis.Stratis\Pictures\Mission\whiteboard.jpg" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="TestData\Antistasi_Stratis.Stratis\cba_settings.sqf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestData\Antistasi_Stratis.Stratis\description.ext">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestData\Antistasi_Stratis.Stratis\initPlayerLocal.sqf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestData\Antistasi_Stratis.Stratis\initServer.sqf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestData\Antistasi_Stratis.Stratis\mapInfo.hpp">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestData\Antistasi_Stratis.Stratis\mission.sqm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestData\Antistasi_Stratis.Stratis\navGrid.sqf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestData\Antistasi_Stratis.Stratis\onPlayerRespawn.sqf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestData\Antistasi_Stratis.Stratis\Pictures\Mission\PIC.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestData\Antistasi_Stratis.Stratis\Pictures\Mission\whiteboard.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.6.0" />
     <PackageReference Include="xunit" Version="2.4.2" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.5">

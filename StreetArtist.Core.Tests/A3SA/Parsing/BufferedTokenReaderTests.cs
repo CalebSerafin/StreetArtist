@@ -142,5 +142,67 @@ public class BufferedTokenReaderTests {
         Assert.Equal(remainder, await tokenReader.ReadRestAsString(cancellationToken));
     }
 
+    [Fact]
+    public async Task CanAdvanceOverNoWhiteSpace() {
+        // Arrange
+        string token = "Hello";
+        Stream stream = GetStringStream($"{token}");
+        BufferedTokenReader tokenReader = new(stream);
+
+        // Act
+        await tokenReader.AdvanceOverWhitespace(cancellationToken);
+        string characters = await tokenReader.ReadToken(cancellationToken);
+
+        // Assert
+        Assert.Equal(token, characters);
+    }
+
+    [Fact]
+    public async Task CanAdvanceOverWhiteSpace() {
+        // Arrange
+        string token = "Hello";
+        Stream stream = GetStringStream($"  {token}");
+        BufferedTokenReader tokenReader = new(stream);
+
+        // Act
+        await tokenReader.AdvanceOverWhitespace(cancellationToken);
+        string characters = await tokenReader.ReadToken(cancellationToken);
+
+        // Assert
+        Assert.Equal(token, characters);
+    }
+
+    [Fact]
+    public async Task ErrorsAreReportedAtCorrectPosition() {
+        // Arrange
+        string token = " 2 ";
+        int errorCharacter = 12;
+        int errorLine = 2;
+        int errorColumn = 9;
+        string text = $$"""
+            [
+                [{{token}}, ]
+            ]
+            """;
+        Stream stream = GetStringStream(text);
+        BufferedTokenReader tokenReader = new(stream);
+
+        // Act
+        await tokenReader.AdvanceOverWhitespace(cancellationToken);
+        Assert.True(await tokenReader.AdvanceIfExpectedChar('[', cancellationToken));
+        await tokenReader.AdvanceOverWhitespace(cancellationToken);
+        Assert.True(await tokenReader.AdvanceIfExpectedChar('[', cancellationToken));
+        Assert.Equal(token, await tokenReader.ReadToken(cancellationToken));
+        Assert.False(await tokenReader.AdvanceIfExpectedChar(']', cancellationToken));
+        testOutput.WriteLine($"Character: {tokenReader.CharacterNumber}, Line: {tokenReader.LineNumber}, Column: {tokenReader.ColumnNumber};");
+        Assert.Equal(errorCharacter, tokenReader.CharacterNumber);
+        Assert.Equal(errorLine, tokenReader.LineNumber);
+        Assert.Equal(errorColumn, tokenReader.ColumnNumber);
+        //Assert.Equal(1, await tokenReader.LineNumber);
+
+        // Assert
+
+    }
+
     static Stream GetStringStream(string value) => new MemoryStream(Encoding.UTF8.GetBytes(value));
 }

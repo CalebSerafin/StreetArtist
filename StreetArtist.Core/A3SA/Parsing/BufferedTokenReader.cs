@@ -1,5 +1,6 @@
 ﻿// Ignore Spelling: nav Ng
 
+using System.IO;
 using System.Text;
 
 using OneOf;
@@ -13,14 +14,21 @@ namespace StreetArtist.Core.A3SA.Parsing;
 /// </summary>
 internal class BufferedTokenReader {
     public BufferedTokenReader(Stream stream) {
-        this.stream = stream;
+        streamReader = new StreamReader(stream, encoding: null, detectEncodingFromByteOrderMarks: true, bufferSize: -1, leaveOpen: true);
     }
 
     public int BlockSize { get; init; } = 256;
     public char[] Delimiters { get; init; } = defaultdelimiters;
-    public long Position => (stream.CanRead ? stream.Position : 0 ) - bufferLength;
-    public long LineNumber { get; private set; } = 0;
-    public long ColumnNumber { get; private set; } = 0;
+    public long Position { get; private set; } = 0;
+
+    /// <summary> <strong>1-Based</strong> Index! (Compatible with most text editors) </summary>
+    public long CharacterNumber => Position + 1;
+
+    /// <summary> <strong>1-Based</strong> Index! (Compatible with most text editors) </summary>
+    public long LineNumber { get; private set; } = 1;
+
+    /// <summary> <strong>1-Based</strong> Index! (Compatible with most text editors) </summary>
+    public long ColumnNumber { get; private set; } = 1;
 
     /// <summary>
     /// Reads a token until a delimiter is found. <br/>
@@ -168,6 +176,21 @@ ReturnToken:
         AdvanceIfExpectedSequence(expected.AsMemory(), cancellationToken);
 
     /// <summary>
+    /// Advances until the position is no longer over whitespace.
+    /// </summary>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    public async ValueTask AdvanceOverWhitespace(CancellationToken cancellationToken) {
+        while (true) {
+            if (!(await TryPeekChar(cancellationToken)).TryPickT0(out char nextChar, out _))
+                return;
+            if (!char.IsWhiteSpace(nextChar))
+                return;
+            AdvanceBuffer(1);
+        }
+    }
+
+    /// <summary>
     /// Checks if the passed character is one of the expected deliminters.
     /// </summary>
     /// <param name="delimiters"></param>
@@ -219,11 +242,10 @@ ReturnToken:
         else if (!PeekBuffer().IsEmpty)
             return true;
 
-        bufferIndex = 0;
-        if (stream.CanRead)
-            using (StreamReader reader = new(stream)) {
-                bufferLength = await reader.ReadAsync(buffer, cancellationToken);
-            }
+        if (!streamReader.EndOfStream) {
+            bufferIndex = 0;
+            bufferLength = await streamReader.ReadAsync(buffer, cancellationToken);
+        }
         return bufferLength > 0;
     }
 
@@ -243,11 +265,10 @@ ReturnToken:
         PeekBuffer().CopyTo(buffer);
         bufferIndex = 0;
         // Append remainingBuffer with new items.
-        if (stream.CanRead)
-            using (StreamReader reader = new(stream)) {
-                Memory<char> destination = buffer.AsMemory()[bufferLength..];
-                bufferLength += await reader.ReadAsync(destination, cancellationToken);
-            }
+        if (!streamReader.EndOfStream) {
+            Memory<char> destination = buffer.AsMemory()[bufferLength..];
+            bufferLength += await streamReader.ReadAsync(destination, cancellationToken);
+        }
         return bufferLength > 0;
     }
 
@@ -291,27 +312,29 @@ ReturnToken:
     }
 
     void AdvanceBuffer(int amount) {
-        RecordNewLines(PeekBuffer()[..amount].Span);
+        RecordHistory(PeekBuffer()[..amount].Span);
         bufferIndex += amount;
         bufferLength -= amount;
     }
 
-    void RecordNewLines(ReadOnlySpan<char> sequence) {
-        (int lines, int columnNumber) = CountNewLines(sequence);
+    void RecordHistory(ReadOnlySpan<char> sequence) {
+        Position += sequence.Length;
+        (int lines, int columnOffset) = CountNewLines(sequence);
         LineNumber += lines;
+        // Reset column number if a newline was met.
         if (lines > 0)
-            ColumnNumber = 0;
-        ColumnNumber += columnNumber;
+            ColumnNumber = 1;
+        ColumnNumber += columnOffset;
     }
 
-    static (int Lines, int ColumnNumber) CountNewLines(ReadOnlySpan<char> sequence) {
-        int count = 0;
+    static (int Lines, int ColumnOffset) CountNewLines(ReadOnlySpan<char> sequence) {
+        int linesCount = 0;
         while (true) {
             int index = sequence.IndexOf(newLine);
             if (index < 0)
-                return (count, sequence.Length - 1);
+                return (linesCount, sequence.Length);
             sequence = sequence[(index + 1)..];
-            count++;
+            linesCount++;
         }
     }
 
@@ -320,7 +343,7 @@ ReturnToken:
     int bufferLength = 0;
     const char newLine = '\n';
     static readonly char[] defaultdelimiters = new char[] { ',', '[', ']' };
-    readonly Stream stream;
+    readonly StreamReader streamReader;
     #endregion
 
 }

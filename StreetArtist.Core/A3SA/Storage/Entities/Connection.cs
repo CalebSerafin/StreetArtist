@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace StreetArtist.Core.A3SA.Storage.Models;
-internal class Connection
-{
+﻿namespace StreetArtist.Core.A3SA.Storage.Models;
+internal struct Connection {
+    public int IndexOfConnectedNode { get; set; }
+    public int RoadType { get; set; }
+    public float TrueDrivingDistance { get; set; }
 }
