@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace StreetArtist.Core.Roads;
-internal class Road {
+namespace StreetArtist.Core.Projects.Entities;
+internal class Project
+{
 }
